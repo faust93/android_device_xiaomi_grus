@@ -67,7 +67,8 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.software.sip.voip.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.sip.voip.xml \
     frameworks/native/data/etc/com.android.nfc_extras.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/com.android.nfc_extras.xml \
     frameworks/native/data/etc/com.nxp.mifare.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/com.nxp.mifare.xml \
-    frameworks/native/data/etc/handheld_core_hardware.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/handheld_core_hardware.xml
+    frameworks/native/data/etc/handheld_core_hardware.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/handheld_core_hardware.xml \
+    vendor/lineage/config/permissions/vendor.lineage.biometrics.fingerprint.inscreen.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/vendor.lineage.biometrics.fingerprint.inscreen.xml
 
 # AID/fs configs
 PRODUCT_PACKAGES += \
@@ -87,7 +88,6 @@ PRODUCT_PACKAGES += \
     android.hardware.audio.effect@4.0 \
     android.hardware.audio.effect@4.0-impl \
     android.hardware.soundtrigger@2.1-impl:32 \
-    audio.a2dp.default \
     audio.r_submix.default \
     audio.usb.default \
     libaudio-resampler \
@@ -98,6 +98,11 @@ PRODUCT_PACKAGES += \
     libvolumelistener \
     libtinycompress \
     tinymix
+
+# A2DP
+PRODUCT_PACKAGES += \
+    audio.a2dp.default \
+    android.hardware.bluetooth.a2dp@1.0-impl
 
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/audio/audio_effects.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_effects.xml \
@@ -160,14 +165,19 @@ PRODUCT_PACKAGES += \
 
 # Display/Graphics
 PRODUCT_PACKAGES += \
+    gralloc.sdm710 \
+    hwcomposer.sdm710 \
+    memtrack.sdm710 \
     android.frameworks.displayservice@1.0 \
     android.hardware.graphics.allocator@2.0-impl \
     android.hardware.graphics.allocator@2.0-service \
     android.hardware.graphics.composer@2.1-service \
     android.hardware.graphics.composer@2.1-impl \
     android.hardware.graphics.mapper@2.0-impl \
+    android.hardware.graphics.mapper@2.0-impl-qti-display \
     android.hardware.memtrack@1.0-impl \
     android.hardware.memtrack@1.0-service \
+    android.hardware.renderscript@1.0-impl \
     libdisplayconfig \
     libqdMetaData.system \
     libtinyxml \
@@ -177,7 +187,13 @@ PRODUCT_PACKAGES += \
     vendor.display.config@1.2.vendor \
     vendor.display.config@1.3.vendor \
     vendor.display.config@1.4.vendor \
-    vendor.display.config@1.5.vendor
+    vendor.display.config@1.5.vendor \
+    vendor.display.config@1.7 \
+    vendor.qti.hardware.display.allocator@1.0-service
+
+PRODUCT_PACKAGES += \
+    android.hardware.configstore@1.0-service \
+    android.hardware.broadcastradio@1.0-impl
 
 # DRM
 PRODUCT_PACKAGES += \
@@ -273,7 +289,8 @@ PRODUCT_COPY_FILES += \
 
 # Lights
 PRODUCT_PACKAGES += \
-    android.hardware.light@2.0-service.xiaomi_sdm710
+    android.hardware.light@2.0-service.xiaomi_sdm710 \
+    lights.sdm710
 
 # IPACM
 PRODUCT_PACKAGES += \
@@ -332,9 +349,7 @@ PRODUCT_COPY_FILES += \
 
 # Power
 PRODUCT_PACKAGES += \
-    android.hardware.power@1.0-impl \
-    android.hardware.power@1.0-service \
-    power.qcom
+    android.hardware.power@1.2-service.xiaomi_sdm710
 
 # QTI
 PRODUCT_COPY_FILES += \
@@ -389,7 +404,8 @@ PRODUCT_BOOT_JARS += \
 # Thermal
 PRODUCT_PACKAGES += \
     android.hardware.thermal@1.0-impl \
-    android.hardware.thermal@1.0-service
+    android.hardware.thermal@1.0-service \
+    thermal.sdm710
 
 # TextClassifier
 PRODUCT_PACKAGES += \
@@ -409,12 +425,17 @@ PRODUCT_PACKAGES += \
 
 # Vibrator
 PRODUCT_PACKAGES += \
-    android.hardware.vibrator@1.0-impl \
-    android.hardware.vibrator@1.0-service
+    android.hardware.vibrator@1.1-service.xiaomi
 
 # VNDK-SP
 PRODUCT_PACKAGES += \
     vndk_package
+
+# VR
+PRODUCT_PACKAGES += \
+    android.hardware.vr@1.0-impl \
+    android.hardware.vr@1.0-service \
+    vr.sdm710
 
 # WiFi Display
 PRODUCT_PACKAGES += \
@@ -429,7 +450,13 @@ PRODUCT_PACKAGES += \
     wpa_supplicant \
     wpa_supplicant.conf \
     vendor.qti.hardware.wifi.hostapd@1.0.vendor \
-    vendor.qti.hardware.wifi.supplicant@2.0.vendor
+    vendor.qti.hardware.wifi.supplicant@2.0.vendor \
+    hostapd_cli \
+    libqsap_sdk \
+    libQWiFiSoftApCfg \
+    vendor.qti.hardware.wifi.supplicant@1.0_vendor \
+    wificond \
+    wifilogd
 
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/wifi/p2p_supplicant_overlay.conf:$(TARGET_COPY_OUT_VENDOR)/etc/wifi/p2p_supplicant_overlay.conf \
@@ -441,9 +468,9 @@ PRODUCT_PACKAGES += \
     XiaomiParts
 
 PRODUCT_BOOT_JARS += \
-    WfdCommon \
-    QPerformance \
-    UxPerformance
+    WfdCommon
+#    UxPerformance \
+#    QPerformance
 
 # Input
 PRODUCT_COPY_FILES += \
@@ -452,27 +479,30 @@ PRODUCT_COPY_FILES += \
 
 # NFC
 PRODUCT_PACKAGES += \
-    NQNfcNci \
-    libnqnfc-nci \
-    libnqnfc_nci_jni \
-    nfc_nci.nqx.default \
-    libp61-jcop-kit \
-    com.nxp.nfc.nq \
-    com.nxp.nfc.nq.xml \
     nqnfcee_access.xml \
     nqnfcse_access.xml \
-    Tag \
-    com.android.nfc_extras \
+    libnqnfc-nci \
+    libnqnfc_nci_jni \
+    libp61-jcop-kit \
     vendor.nxp.hardware.nfc@1.1-service \
-    nfc_nci.nqx.default.hw
+    nfc_nci.nqx.default.hw \
+    nfc_nci.nqx.default \
+    com.nxp.nfc.nq \
+    com.nxp.nfc.nq.xml \
+    com.android.nfc_extras \
+    Tag \
+    NQNfcNci
 
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/libnfc-nci.conf:system/etc/libnfc-nci.conf \
-    $(LOCAL_PATH)/libnfc-nxp.conf:system/etc/nfc/libnfc-nxp.conf
+    $(LOCAL_PATH)/configs/nfc/libnfc-nci.conf:system/etc/libnfc-nci.conf \
+    $(LOCAL_PATH)/configs/nfc/libnfc-nxp.conf:system/etc/libnfc-nxp.conf \
+    $(LOCAL_PATH)/configs/nfc/libnfc-nxp_default.conf:system/etc/libnfc-nxp_default.conf \
+    $(LOCAL_PATH)/configs/nfc/libnfc-brcm.conf:system/etc/libnfc-brcm.conf
 
 # Bluetooth
-#PRODUCT_PACKAGES += \
-#    libbthost_if
+PRODUCT_PACKAGES += \
+    BluetoothResCommon \
+    libbthost_if
 
 # qti telephony
 PRODUCT_PACKAGES += \

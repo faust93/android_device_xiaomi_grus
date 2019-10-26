@@ -29,7 +29,6 @@ import /vendor/etc/init/hw/init.qcom.usb.rc
 import /vendor/etc/init/hw/init.msm.usb.configfs.rc
 import /vendor/etc/init/hw/init.target.rc
 import /vendor/etc/init/hw/init.qcom.factory.rc
-import /vendor/etc/init/hw/init.qcom.test.rc
 
 on early-init
     mount debugfs debugfs /sys/kernel/debug
@@ -43,8 +42,6 @@ on early-init
 
     chown root system /dev/kmsg
     chmod 0620 /dev/kmsg
-    # Load WIGIG platform driver
-    # exec u:r:vendor_modprobe:s0 -- /vendor/bin/modprobe -a -d /vendor/lib/modules msm_11ad_proxy
 
 on init
     # Create cgroup mount point for memory
@@ -56,7 +53,6 @@ on init
 
 on post-fs
     chmod 0755 /sys/kernel/debug/tracing
-    insmod /vendor/lib/modules/exfat.ko
 
 on early-boot
     # set RLIMIT_MEMLOCK to 64MB
@@ -152,14 +148,9 @@ on boot
 #   ReadMin, ReadInitial, ReadMax, WriteMin, WriteInitial, WriteMax,
     setprop net.tcp.buffersize.wifi    524288,2097152,4194304,262144,524288,1048576
 
-
     setprop ro.telephony.call_ring.multiple false
-
-
     #Remove SUID bit for iproute2 ip tool
     chmod 0755 /system/bin/ip
-
-
     chmod 0444 /sys/devices/platform/msm_hsusb/gadget/usb_state
 
 #   Define TCP buffer sizes for various networks
@@ -223,19 +214,11 @@ on boot
     chown system system /sys/class/sensors/apds9930-proximity/enable
     chown system system /sys/class/sensors/apds9930-proximity/poll_delay
 
-    # Create directory used for display
-    # for backward compatibility
     mkdir /persist/display 0770 system graphics
     mkdir /mnt/vendor/persist/display 0770 system graphics
-
-    # Create vpp directory
     mkdir /mnt/vendor/persist/vpp 0770 media media
-
-
-    # Create hvdcp_opti directory
     mkdir /mnt/vendor/persist/hvdcp_opti 0770 root system
 
-    #Create camera directory
     mkdir /mnt/vendor/persist/camera 0755 system cameraserver
 
     # chmod 0666 show_traced_package show_windowsize package_runtime_disable develop_mode
@@ -244,20 +227,26 @@ on boot
     chmod 0666 /proc/trace_package/package_runtime_disable
     chmod 0666 /proc/trace_package/develop_mode
 
+    # Flicker-free
+    chmod 0600 /sys/devices/platform/soc/soc\:qcom,dsi-display@18/msm_fb_ea_enable
+    chown system system /sys/devices/platform/soc/soc\:qcom,dsi-display@18/msm_fb_ea_enable
+
+    # Vibrator
+    chown system system /sys/class/leds/vibrator/vmax_override
+    chmod 0664 /sys/class/leds/vibrator/vmax_override
+    chown system system /sys/class/leds/vibrator/vmax_mv_user
+    chmod 0664 /sys/class/leds/vibrator/vmax_mv_user
+    chown system system /sys/class/leds/vibrator/vmax_mv_call
+    chmod 0664 /sys/class/leds/vibrator/vmax_mv_call
+    chown system system /sys/class/leds/vibrator/vmax_mv_strong
+    chmod 0664 /sys/class/leds/vibrator/vmax_mv_strong
+
 # msm specific files that need to be created on /data
 on post-fs-data
     mkdir /data/vendor/misc 01771 system system
-
-    # Create directory used for dump collection
     mkdir /data/vendor/ssrdump 0770 root system
-
-    # Create directory used by display clients
     mkdir /data/vendor/display 0770 system graphics
-
-    # Change lm related dirs
     mkdir /data/vendor/lm 0700 root root
-
-    # Create directory used by media clients
     mkdir /data/vendor/media 0770 mediacodec media
 
     # create QDMA dropbox
@@ -274,7 +263,6 @@ on post-fs-data
 
     #Create folder of camera
     mkdir /data/vendor/camera 0770 camera camera
-
 
     #Create directory for tftp
     mkdir /data/vendor/tombstones 0771 system system
@@ -878,7 +866,7 @@ service wifi_ftmd /system/vendor/bin/wifi_ftmd
 on property:vendor.wifi.ftmd.load=true
     insmod /system/lib/modules/pronto/pronto_wlan.ko con_mode=5
 
-service vendor.cnss_diag /system/vendor/bin/cnss_diag -q
+service vendor.cnss_diag /system/vendor/bin/cnss_diag -q -f
     class late_start
     user system
     group system wifi inet net_admin sdcard_rw media_rw diag

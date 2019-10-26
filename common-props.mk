@@ -14,6 +14,8 @@ PRODUCT_PROPERTY_OVERRIDES += \
 # Camera
 PRODUCT_PROPERTY_OVERRIDES += \
     camera.disable_zsl_mode=true \
+    persist.vendor.camera.HAL3.enabled=1 \
+    persist.vendor.camera.eis.enable=1 \
     vendor.camera.aux.packagelist=com.dual.GCam,com.Wide.GCam,com.Tele.GCam,org.codeaurora.snapcam,com.android.camera
 
 # CNE and DPM
@@ -32,7 +34,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 
 # Display density
 PRODUCT_PROPERTY_OVERRIDES += \
-    ro.sf.lcd_density=440
+    ro.sf.lcd_density=480
 
 # Display features
 PRODUCT_PROPERTY_OVERRIDES += \
@@ -104,7 +106,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
     persist.vendor.radio.force_on_dc=true \
     persist.vendor.radio.redir_party_num=1 \
     persist.vendor.radio.report_codec=1 \
-    ril.subscription.types=NV,RUIM \
+    ril.subscription.types=RUIM \
     ro.telephony.default_network=22,22 \
     telephony.lteOnCdmaDevice=1 \
     persist.radio.add_power_save=1 \

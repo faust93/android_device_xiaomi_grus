@@ -21,6 +21,17 @@ PRODUCT_PROPERTY_OVERRIDES += \
     dalvik.vm.heapminfree=512k \
     dalvik.vm.heapmaxfree=8m
 
+# IMS
+PRODUCT_PROPERTY_OVERRIDES += \
+    persist.dbg.volte_avail_ovr=1 \
+    persist.dbg.vt_avail_ovr=1 \
+    persist.vendor.ims.disableUserAgent=0
+
+PRODUCT_PROPERTY_OVERRIDES += \
+    persist.radio.rat_on=combine \
+    persist.radio.data_ltd_sys_ind=1 \
+    persist.radio.data_con_rprt=1
+
 # Disable sensors debug
 PRODUCT_PROPERTY_OVERRIDES += \
     persist.vendor.debug.sensors.hal=0
@@ -53,7 +64,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 	vendor.perf.gestureflingboost.enable=true \
 	sys.displayfeature_hidl=true \
 	sys.displayfeature.hbm.enable=true \
-	vendor.display.enable_default_color_mode=0 \
+	vendor.display.enable_default_color_mode=1 \
 	ro.vendor.qti.sys.fw.bservice_limit=5 \
 	ro.vendor.qti.sys.fw.bservice_age=5000 \
 	ro.cutoff_voltage_mv=3400 \
@@ -85,8 +96,6 @@ PRODUCT_PROPERTY_OVERRIDES += \
 	ro.wlan.vendor=qcom \
 	ro.wlan.chip=39xx \
 	ro.wlan.mimo=1 \
-	persist.vendor.btstack.enable.splita2dp=true \
-	persist.vendor.btstack.a2dp_offload_cap=sbc-aptx-aptxtws-aptxhd-aac-ldac \
 	media.stagefright.enable-player=true \
 	media.stagefright.enable-http=true \
 	media.stagefright.enable-aac=true \
